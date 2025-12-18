@@ -1,0 +1,2118 @@
+{
+  "name": "MyFIN_bot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message",
+          "callback_query"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1504,
+        -32
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Telegram Trigger",
+      "webhookId": "YOUR_WEBHOOK_ID_1",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_BOT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/file/YOUR_TELEGRAM_BOT_TOKEN/{{ $json.result.file_path }}",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        160,
+        -384
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        512,
+        -240
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{$json.message.voice.file_id}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        -384
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Get a file",
+      "webhookId": "YOUR_WEBHOOK_ID_2",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_BOT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.openai.com/v1/audio/transcriptions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_OPENAI_API_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "=file",
+              "inputDataFieldName": "=data"
+            },
+            {
+              "name": "model",
+              "value": "whisper-1"
+            },
+            {
+              "name": "language",
+              "value": "ru"
+            },
+            {
+              "name": "response_format",
+              "value": "json"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        336,
+        -384
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "name": "text",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "name": "user_id",
+              "value": "={{ $json.message.from.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        -224
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://qwvqoiwgfppvuzobzgvy.supabase.co/rest/v1/transactions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_daS1tWSY2UUcuR9BhfT7KA_3qbI2Aia"
+            },
+            {
+              "name": "Authorization",
+              "value": "sb_publishable_daS1tWSY2UUcuR9BhfT7KA_3qbI2Aia"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"user_id\": \"{{ $json.user_id }}\",\n  \"type\": \"{{ $json.type }}\",\n  \"category\": \"{{ $json.category }}\",\n  \"amount\": {{ $json.amount }},\n  \"description\": \"{{ $json.description }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        848,
+        -240
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=✅ Запись добавлена!\n\n{{ $json.type === 'income' ? '➕ Доход' : '➖ Расход' }}\n🏷️ {{ $json.category }}\n💰 {{ $json.amount }} грн\n📝 {{ $json.description }}\n\n❌ МОЖЕШЬ ОТМЕНИТЬ ПОСЛЕДНЮЮ ОПЕРАЦИЮ\n    НАЖАВ КНОПКУ НИЖЕ ",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📊 Отчёт за сегодня",
+                    "additionalFields": {
+                      "callback_data": "report_today"
+                    }
+                  },
+                  {
+                    "text": "📈 Доходы за сегодня",
+                    "additionalFields": {
+                      "callback_data": "income_today"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📉 Расходы за сегодня",
+                    "additionalFields": {
+                      "callback_data": "expense_today"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📊 Баланс",
+                    "additionalFields": {
+                      "callback_data": "balance_all"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🗑️ Обнулить баланс",
+                    "additionalFields": {
+                      "callback_data": "reset_balance"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "❌ Отменить последнее",
+                    "additionalFields": {
+                      "callback_data": "delete_last"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1216,
+        -240
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Send a text message",
+      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_BOT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "name": "type",
+              "value": "={{ $('Parse Text').item.json.type }}",
+              "type": "string"
+            },
+            {
+              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "name": "category",
+              "value": "={{ $('Parse Text').item.json.category }}",
+              "type": "string"
+            },
+            {
+              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "name": "amount",
+              "value": "={{ $('Parse Text').item.json.amount }}",
+              "type": "number"
+            },
+            {
+              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "name": "description",
+              "value": "={{ $('Parse Text').item.json.description }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        -240
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const text = item.json.text.toLowerCase();\n  const result = { \n    user_id: item.json.user_id, \n    type: 'expense',  // по умолчанию расход\n    category: 'Личное',  // по умолчанию личное\n    amount: 0, \n    description: item.json.text \n  };\n  \n  // ТИП - ДОБАВЛЕН ПРОДАЛ!\n  if (text.includes('продал') || text.includes('получил') || text.includes('прибыль') || text.includes('заработал')) {\n    result.type = 'income';\n  }\n  \n  // Сумма\n  const amount = text.match(/(\\d+[.,]?\\d*)/);\n  if (amount) result.amount = parseFloat(amount[1].replace(',', '.'));\n  \n  // Категории БИЗНЕС (приоритет)\n  if (text.includes('бизнес') || text.includes('для бизнеса') || text.includes('стол') || \n      text.includes('офис') || text.includes('оборудование') || text.includes('реклама')) {\n    result.category = 'Бизнес';\n  } \n  // Личное\n  else if (text.includes('продукт') || text.includes('еда') || text.includes('продукты')) {\n    result.category = 'Личное';\n  }\n  // Другие личные категории\n  else if (text.includes('аренда') || text.includes('транспорт') || text.includes('одежда')) {\n    result.category = 'Личное';\n  }\n  \n  results.push({ json: result });\n}\n\nreturn results;\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        688,
+        -240
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Parse Text"
+    },
+    {
+      "parameters": {
+        "url": "=https://qwvqoiwgfppvuzobzgvy.supabase.co/rest/v1/transactions",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "select",
+              "value": "*"
+            },
+            {
+              "name": "user_id",
+              "value": "=eq.{{ $('Telegram Trigger').first().json.callback_query.from.id }}"
+            },
+            {
+              "name": "order",
+              "value": "created_at.desc"
+            },
+            {
+              "name": "limit",
+              "value": "100"
+            },
+            {
+              "name": "created_at",
+              "value": "=gte.{{ $('Today Filter').first().json.today_filter }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer sb_secret_yMRQc0A_rs9Q2CqDMFayTw_QaNUWEnt"
+            },
+            {
+              "name": "=apikey",
+              "value": "=sb_secret_yMRQc0A_rs9Q2CqDMFayTw_QaNUWEnt"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -112,
+        -64
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.callback_query.data }}",
+                    "rightValue": "report_today",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "REPLACE_WITH_UNIQUE_UUID"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "REPLACE_WITH_UNIQUE_UUID",
+                    "leftValue": "={{ $json.callback_query.data }}",
+                    "rightValue": "income_today",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "REPLACE_WITH_UNIQUE_UUID",
+                    "leftValue": "={{ $json.callback_query.data }}",
+                    "rightValue": "expense_today",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "REPLACE_WITH_UNIQUE_UUID",
+                    "leftValue": "={{ $json.callback_query.data }}",
+                    "rightValue": "balance_all",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "REPLACE_WITH_UNIQUE_UUID",
+                    "leftValue": "={{ $json.callback_query.data }}",
+                    "rightValue": "reset_balance",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "REPLACE_WITH_UNIQUE_UUID",
+                    "leftValue": "={{ $json.callback_query.data }}",
+                    "rightValue": "delete_last",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -672,
+        160
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "обработчик кнопок"
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $('Telegram Trigger').first().json.callback_query.id }}\n\n",
+        "additionalFields": {
+          "show_alert": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        -64
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Answer Query a callback",
+      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_BOT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "leftValue": "={{ $json.callback_query }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -496,
+        -288
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Is Message"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "leftValue": "={{ $json.message.voice }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -256,
+        -304
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "voice or text"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Отладка: покажи ВСЕ данные\nconsole.log('ALL INPUT:', JSON.stringify($input.all(), null, 2));\n\n// Правильный способ для Supabase массива\nconst transactions = $input.all().map(item => item.json);\n\nlet total_income = 0, total_expense = 0;\nlet transactions_list = '';\n\ntransactions.slice(0, 5).forEach(t => {\n  console.log('Transaction:', t); // Отладка\n  const amount = Number(t.amount) || 0;\n  const category = t.category || 'Неизвестно';\n  \n  if (t.type === 'income') total_income += amount;\n  else total_expense += amount;\n  \n  transactions_list += `• ${amount} грн | ${category}\\n`;\n});\n\nreturn [{\n  total_income,\n  total_expense,\n  balance: total_income - total_expense,\n  records_count: transactions.length,\n  transactions_list,\n  callback_query: $('Telegram Trigger').first().json.callback_query\n}];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        -64
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.callback_query.message.chat.id }}\n",
+        "text": "=📊 Финансовый отчёт за сегодня\n\n💰 Доходы: {{ $json.total_income }} грн\n💸 Расходы: {{ $json.total_expense }} грн\n💳 Баланс: {{ $json.balance }} грн\n📋 Записей: {{ $json.records_count }}\n\n**Последние операции:**\n{{ $json.transactions_list }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📊 Отчёт за сегодня",
+                    "additionalFields": {
+                      "callback_data": "report_today"
+                    }
+                  },
+                  {
+                    "text": "📈 Доходы за сегодня",
+                    "additionalFields": {
+                      "callback_data": "income_today"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📉 Расходы за сегодня",
+                    "additionalFields": {
+                      "callback_data": "expense_today"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📊 Баланс",
+                    "additionalFields": {
+                      "callback_data": "balance_all"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🗑️ Обнулить баланс",
+                    "additionalFields": {
+                      "callback_data": "reset_balance"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        -64
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Send a text message1",
+      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_BOT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const today = new Date();\ntoday.setHours(0, 0, 0, 0);\nconst isoToday = today.toISOString();\n\nreturn [{\n  json: {\n    ...$json,\n    today_filter: isoToday\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        -64
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Today Filter"
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $('Telegram Trigger').first().json.callback_query.id }}\n\n",
+        "additionalFields": {
+          "show_alert": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        96
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Answer Query a callback1",
+      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_BOT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = $input.all();\nconst incomes = records.filter(item => item.json.type === 'income');\n\nconst totalIncome = incomes.reduce((sum, item) => sum + parseFloat(item.json.amount || 0), 0);\nconst last5 = incomes.slice(0, 5).map(item => \n  `${item.json.amount} грн | ${item.json.category || 'Доход'}`\n).join('\\n• ') || 'Нет доходов сегодня';\n\nreturn [{\n  json: {\n    title: \"📈 ОТЧЁТ ПО ДОХОДАМ (сегодня)\",\n    income: totalIncome.toFixed(0),\n    records: incomes.length,\n    lastOperations: last5\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        96
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "url": "=https://qwvqoiwgfppvuzobzgvy.supabase.co/rest/v1/transactions",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "select",
+              "value": "*"
+            },
+            {
+              "name": "user_id",
+              "value": "=eq.{{ $('Telegram Trigger').first().json.callback_query.from.id }}"
+            },
+            {
+              "name": "created_at",
+              "value": "=gte.{{ $('Today Filter Income').first().json.today_filter }}"
+            },
+            {
+              "name": "type",
+              "value": "eq.income"
+            },
+            {
+              "name": "order",
+              "value": "created_at.desc"
+            },
+            {
+              "name": "limit",
+              "value": "100"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer sb_secret_yMRQc0A_rs9Q2CqDMFayTw_QaNUWEnt"
+            },
+            {
+              "name": "=apikey",
+              "value": "=sb_secret_yMRQc0A_rs9Q2CqDMFayTw_QaNUWEnt"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -112,
+        96
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Income Report"
+    },
+    {
+      "parameters": {
+        "jsCode": "const today = new Date();\ntoday.setHours(0, 0, 0, 0);\nconst isoToday = today.toISOString();\n\nreturn [{\n  json: {\n    ...$json,\n    today_filter: isoToday\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        96
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Today Filter Income"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.callback_query.message.chat.id }}\n\n",
+        "text": "=📈 ОТЧЁТ ПО ДОХОДАМ за сегодня\n\n💰 Доходы: {{ $json.income }} грн\n📊 Записей: {{ $json.records }}\n\n**Последние операции:**\n• {{ $json.lastOperations }}\n",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📊 Отчёт за сегодня",
+                    "additionalFields": {
+                      "callback_data": "report_today"
+                    }
+                  },
+                  {
+                    "text": "📈 Доходы за сегодня",
+                    "additionalFields": {
+                      "callback_data": "income_today"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📉 Расходы за сегодня",
+                    "additionalFields": {
+                      "callback_data": "expense_today"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📊 Баланс",
+                    "additionalFields": {
+                      "callback_data": "balance_all"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🗑️ Обнулить баланс",
+                    "additionalFields": {
+                      "callback_data": "reset_balance"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        96
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Send a text message2",
+      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_BOT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $('Telegram Trigger').first().json.callback_query.id }}\n\n",
+        "additionalFields": {
+          "show_alert": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        256
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Answer Query a callback2",
+      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_BOT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = $input.all();\nconst expenses = records.filter(item => item.json.type === 'expense');\n\nconst totalExpense = expenses.reduce((sum, item) => sum + parseFloat(item.json.amount || 0), 0);\nconst last5 = expenses.slice(0, 5).map(item => \n  `${item.json.amount} грн | ${item.json.category || 'Расход'}`\n).join('\\n• ') || 'Нет расходов сегодня';\n\nreturn [{\n  json: {\n    title: \"📉 ОТЧЁТ ПО РАСХОДАМ (сегодня)\",\n    expense: totalExpense.toFixed(0),\n    records: expenses.length,\n    lastOperations: last5\n  }\n}];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        256
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.callback_query.message.chat.id }}\n\n",
+        "text": "=📉 ОТЧЁТ ПО РАСХОДАМ за сегодня\n\n💸 Расходы: {{ $json.expense }} грн\n📊 Записей: {{ $json.records }}\n\n**Последние операции:**\n• {{ $json.lastOperations }}\n",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📊 Отчёт за сегодня",
+                    "additionalFields": {
+                      "callback_data": "report_today"
+                    }
+                  },
+                  {
+                    "text": "📈 Доходы за сегодня",
+                    "additionalFields": {
+                      "callback_data": "income_today"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📉 Расходы за сегодня",
+                    "additionalFields": {
+                      "callback_data": "expense_today"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📊 Баланс",
+                    "additionalFields": {
+                      "callback_data": "balance_all"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🗑️ Обнулить баланс",
+                    "additionalFields": {
+                      "callback_data": "reset_balance"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        256
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Send a text message3",
+      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_BOT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://qwvqoiwgfppvuzobzgvy.supabase.co/rest/v1/transactions",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "select",
+              "value": "*"
+            },
+            {
+              "name": "user_id",
+              "value": "=eq.{{ $('Telegram Trigger').first().json.callback_query.from.id }}"
+            },
+            {
+              "name": "created_at",
+              "value": "=gte.{{ $('Today Filter Expense').first().json.today_filter }}"
+            },
+            {
+              "name": "type",
+              "value": "eq.expense"
+            },
+            {
+              "name": "order",
+              "value": "created_at.desc"
+            },
+            {
+              "name": "limit",
+              "value": "100"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer sb_secret_yMRQc0A_rs9Q2CqDMFayTw_QaNUWEnt"
+            },
+            {
+              "name": "=apikey",
+              "value": "=sb_secret_yMRQc0A_rs9Q2CqDMFayTw_QaNUWEnt"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -112,
+        256
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Expense Report"
+    },
+    {
+      "parameters": {
+        "jsCode": "const today = new Date();\ntoday.setHours(0, 0, 0, 0);\nconst isoToday = today.toISOString();\n\nreturn [{\n  json: {\n    ...$json,\n    today_filter: isoToday\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        256
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Today Filter Expense"
+    },
+    {
+      "parameters": {
+        "url": "=https://qwvqoiwgfppvuzobzgvy.supabase.co/rest/v1/transactions",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "select",
+              "value": "*"
+            },
+            {
+              "name": "user_id",
+              "value": "=eq.{{ $('Telegram Trigger').first().json.callback_query.from.id }}"
+            },
+            {
+              "name": "order",
+              "value": "created_at.desc"
+            },
+            {
+              "name": "limit",
+              "value": "100"
+            },
+            {
+              "name": "created_at",
+              "value": "=gte.{{ $('Today Filter1').first().json.today_filter }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer sb_secret_yMRQc0A_rs9Q2CqDMFayTw_QaNUWEnt"
+            },
+            {
+              "name": "=apikey",
+              "value": "=sb_secret_yMRQc0A_rs9Q2CqDMFayTw_QaNUWEnt"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -112,
+        432
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "HTTP Request4"
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $('Telegram Trigger').first().json.callback_query.id }}\n\n",
+        "additionalFields": {
+          "show_alert": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        432
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Answer Query a callback3",
+      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_BOT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Отладка: покажи ВСЕ данные\nconsole.log('ALL INPUT:', JSON.stringify($input.all(), null, 2));\n\n// Правильный способ для Supabase массива\nconst transactions = $input.all().map(item => item.json);\n\nlet total_income = 0, total_expense = 0;\nlet transactions_list = '';\n\ntransactions.slice(0, 5).forEach(t => {\n  console.log('Transaction:', t); // Отладка\n  const amount = Number(t.amount) || 0;\n  const category = t.category || 'Неизвестно';\n  \n  if (t.type === 'income') total_income += amount;\n  else total_expense += amount;\n  \n  transactions_list += `• ${amount} грн | ${category}\\n`;\n});\n\nreturn [{\n  total_income,\n  total_expense,\n  balance: total_income - total_expense,\n  records_count: transactions.length,\n  transactions_list,\n  callback_query: $('Telegram Trigger').first().json.callback_query\n}];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        432
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Code in JavaScript3"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.callback_query.message.chat.id }}\n",
+        "text": "=📊 Финансовый отчёт\n\n💰 Доходы: {{ $json.total_income }} грн\n💸 Расходы: {{ $json.total_expense }} грн\n💳 Баланс: {{ $json.balance }} грн\n📋 Записей: {{ $json.records_count }}\n\n**Последние операции:**\n{{ $json.transactions_list }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📊 Отчёт за день",
+                    "additionalFields": {
+                      "callback_data": "report_today"
+                    }
+                  },
+                  {
+                    "text": "📈 Доходы за день",
+                    "additionalFields": {
+                      "callback_data": "income_today"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📉 Расходы за день",
+                    "additionalFields": {
+                      "callback_data": "expense_today"
+                    }
+                  },
+                  {
+                    "text": "📊 Баланс",
+                    "additionalFields": {
+                      "callback_data": "balance_all"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🗑️ Обнулить баланс",
+                    "additionalFields": {
+                      "callback_data": "reset_balance"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        432
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Send a text message4",
+      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_BOT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const today = new Date();\ntoday.setHours(0, 0, 0, 0);\nconst isoToday = today.toISOString();\n\nreturn [{\n  json: {\n    ...$json,\n    today_filter: isoToday\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -288,
+        432
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Today Filter1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "=🎉 **ПРИВЕТ**\nЯ твой личный финансовый помощник.\nОтправляй текстовые или голосовые сообщения,\nс твоими ДОХОДАМИ или РАСХОДАМИ.\n\n**Я ВСЕГДА ГОТОВ ПРЕДОСТАВИТЬ ТЕБЕ**\n• **📊 ОТЧЁТ за сегодня**\n• **💰 ДОХОД за сегодня**  \n• **💸 РАСХОДЫ за сегодня**\n• **📊 БАЛАНС** - общий баланс",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1088,
+        -48
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Send a text message5",
+      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_BOT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -912,
+        -48
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Wait",
+      "webhookId": "REPLACE_WITH_UNIQUE_UUID"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "=✅ **Готов к работе!**\nНАЧНИ ФИКСИРОВАТЬ СВОИ ФИНАНСЫ\n\n💡 **ПРИМЕРЫ голосовый/текстовых сообщений:**\n• `купилл продуктов на 1500` - 💸РАСХОД 1500 грн\n• `продал товар на 2500` - 💰ДОХОД 2500 грн  \n• `получил прибыль с бизнеса 800` - 💰ДОХОД бизнес 800 грн",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -752,
+        -48
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Send a text message6",
+      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_BOT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "/start",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1312,
+        -32
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "If sistem messeg"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.callback_query.message.chat.id }}",
+        "text": "=🗑️ **ПОСЛЕДНЯЯ ОПЕРАЦИЯ УДАЛЕНА**\n\n✅ Можете продолжить вносить данные",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📊 Отчёт за день",
+                    "additionalFields": {
+                      "callback_data": "report_today"
+                    }
+                  },
+                  {
+                    "text": "📈 Доходы за день",
+                    "additionalFields": {
+                      "callback_data": "income_today"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📉 Расходы за день",
+                    "additionalFields": {
+                      "callback_data": "expense_today"
+                    }
+                  },
+                  {
+                    "text": "📊 Баланс",
+                    "additionalFields": {
+                      "callback_data": "balance_all"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🗑️ Обнулить баланс",
+                    "additionalFields": {
+                      "callback_data": "reset_balance"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        768
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Send a text message7",
+      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_BOT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.callback_query.message.chat.id }}\n",
+        "text": "=✅ Баланс обнулён! Все транзакции удалены.\n📤 Готов к новым записям.\n    НАЧНИТЕ ВНОСИТЬ ДАННЫЕ",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -112,
+        608
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Send a text message8",
+      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_BOT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputData = $input.first().json;\nreturn [{ \n  json: { \n    id: inputData.id || '',\n    amount: inputData.amount || 0,\n    type: inputData.type || '',\n    category: inputData.category || ''\n  } \n}];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -112,
+        768
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "Code in JavaScript5"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://qwvqoiwgfppvuzobzgvy.supabase.co/rest/v1/transactions",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "user_id",
+              "value": "=eq.{{ $('Telegram Trigger').first().json.callback_query.from.id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer sb_secret_yMRQc0A_rs9Q2CqDMFayTw_QaNUWEnt"
+            },
+            {
+              "name": "=apikey",
+              "value": "=sb_secret_yMRQc0A_rs9Q2CqDMFayTw_QaNUWEnt"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -288,
+        608
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "HTTP ziro balans"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://qwvqoiwgfppvuzobzgvy.supabase.co/rest/v1/transactions",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "=eq.{{ $json.id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer sb_secret_yMRQc0A_rs9Q2CqDMFayTw_QaNUWEnt"
+            },
+            {
+              "name": "=apikey",
+              "value": "=sb_secret_yMRQc0A_rs9Q2CqDMFayTw_QaNUWEnt"
+            },
+            {
+              "name": "return",
+              "value": "minimal"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        80,
+        768
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "HTTP DELETE last"
+    },
+    {
+      "parameters": {
+        "url": "https://qwvqoiwgfppvuzobzgvy.supabase.co/rest/v1/transactions",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "order",
+              "value": "created_at.desc"
+            },
+            {
+              "name": "limit",
+              "value": "1"
+            },
+            {
+              "name": "user_id",
+              "value": "={{ 'eq.' + $json.callback_query.from.id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_secret_yMRQc0A_rs9Q2CqDMFayTw_QaNUWEnt"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer sb_secret_yMRQc0A_rs9Q2CqDMFayTw_QaNUWEnt"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -288,
+        768
+      ],
+      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "name": "HTTP GET last"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "If sistem messeg",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Parse Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Text": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    },
+    "обработчик кнопок": {
+      "main": [
+        [
+          {
+            "node": "Today Filter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Today Filter Income",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Today Filter Expense",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Today Filter1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP ziro balans",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP GET last",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer Query a callback": {
+      "main": [
+        []
+      ]
+    },
+    "Is Message": {
+      "main": [
+        [
+          {
+            "node": "voice or text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "voice or text": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message1": {
+      "main": [
+        [
+          {
+            "node": "Answer Query a callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Today Filter": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Income Report": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Today Filter Income": {
+      "main": [
+        [
+          {
+            "node": "Income Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message2": {
+      "main": [
+        [
+          {
+            "node": "Answer Query a callback1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Send a text message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message3": {
+      "main": [
+        [
+          {
+            "node": "Answer Query a callback2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expense Report": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Today Filter Expense": {
+      "main": [
+        [
+          {
+            "node": "Expense Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request4": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "Send a text message4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message4": {
+      "main": [
+        [
+          {
+            "node": "Answer Query a callback3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Today Filter1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message5": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Send a text message6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message6": {
+      "main": [
+        []
+      ]
+    },
+    "If sistem messeg": {
+      "main": [
+        [
+          {
+            "node": "Send a text message5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is Message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "обработчик кнопок",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript5": {
+      "main": [
+        [
+          {
+            "node": "HTTP DELETE last",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP ziro balans": {
+      "main": [
+        [
+          {
+            "node": "Send a text message8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP DELETE last": {
+      "main": [
+        [
+          {
+            "node": "Send a text message7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP GET last": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "REPLACE_WITH_UNIQUE_UUID",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d85d386a93ac23e5cda75afc884daa414066b5c356a591bc9c769d8a7119bd79"
+  },
+  "id": "wYhcp5ye30eXRYRT",
+  "tags": []
+}
