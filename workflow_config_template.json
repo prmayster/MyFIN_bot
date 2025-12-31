@@ -1,3 +1,20 @@
+/*
+ * n8n Workflow Configuration Template
+ * 
+ * IMPORTANT: Replace all placeholder values before importing this workflow into n8n
+ * 
+ * Template Placeholders to Replace:
+ * - YOUR_NODE_UUID_1, YOUR_NODE_UUID_2, YOUR_NODE_UUID_3: Replace with unique UUIDs for each node
+ * - YOUR_WEBHOOK_UUID_1, YOUR_WEBHOOK_UUID_2: Replace with your n8n webhook UUIDs
+ * - YOUR_TELEGRAM_API_ID_1, YOUR_TELEGRAM_API_ID_2: Replace with your Telegram Bot API credentials
+ * - YOUR_ASSIGNMENT_UUID_1, YOUR_ASSIGNMENT_UUID_2: Replace with unique UUIDs for assignments
+ * - YOUR_VERSION_UUID: Replace with a unique version UUID
+ * - YOUR_INSTANCE_ID: Replace with your n8n instance ID
+ * - YOUR_WORKFLOW_ID: Replace with a unique workflow ID
+ * 
+ * You can generate UUIDs using online tools or command: uuidgen (Linux/Mac) or [guid]::NewGuid() (PowerShell)
+ */
+
 {
   "name": "MyFIN_bot",
   "nodes": [
@@ -12,46 +29,26 @@
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.2,
       "position": [
-        -1504,
-        -32
+        -1488,
+        352
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "YOUR_NODE_UUID_1",
       "name": "Telegram Trigger",
-      "webhookId": "YOUR_WEBHOOK_ID_1",
-      "credentials": {
+      "webhookId": "YOUR_WEBHOOK_UUID_1",      "credentials": {
         "telegramApi": {
-          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_BOT_NAME"
+        "id": "YOUR_TELEGRAM_API_ID_2",          "name": "MyFin_bot"
         }
       }
-    },
-    {
-      "parameters": {
-        "url": "=https://api.telegram.org/file/YOUR_TELEGRAM_BOT_TOKEN/{{ $json.result.file_path }}",
-        "options": {
-          "response": {
-            "response": {}
-          }
-        }
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        160,
-        -384
-      ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
-      "name": "HTTP Request"
     },
     {
       "parameters": {},
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        512,
-        -240
+        528,
+        144
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "YOUR_NODE_UUID_3",
       "name": "Merge"
     },
     {
@@ -64,81 +61,30 @@
       "typeVersion": 1.2,
       "position": [
         0,
-        -384
+        0
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "5032199b-d915-432a-91ca-0f7e85431d8e",
       "name": "Get a file",
-      "webhookId": "YOUR_WEBHOOK_ID_2",
+      "webhookId": "4647baa0-e6b6-4a10-8afa-7e94d8bd6ff5",
       "credentials": {
         "telegramApi": {
-          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_BOT_NAME"
+          "id": "Eo3LhRYGm2zegv3o",
+          "name": "MyFin_bot"
         }
       }
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "=https://api.openai.com/v1/audio/transcriptions",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer YOUR_OPENAI_API_KEY"
-            }
-          ]
-        },
-        "sendBody": true,
-        "contentType": "multipart-form-data",
-        "bodyParameters": {
-          "parameters": [
-            {
-              "parameterType": "formBinaryData",
-              "name": "=file",
-              "inputDataFieldName": "=data"
-            },
-            {
-              "name": "model",
-              "value": "whisper-1"
-            },
-            {
-              "name": "language",
-              "value": "ru"
-            },
-            {
-              "name": "response_format",
-              "value": "json"
-            }
-          ]
-        },
-        "options": {
-          "response": {
-            "response": {}
-          }
-        }
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        336,
-        -384
-      ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
-      "name": "HTTP Request1"
     },
     {
       "parameters": {
         "assignments": {
           "assignments": [
             {
-              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "id": "56f41a52-246a-4a5e-a484-fdfc3da8d7bc",
               "name": "text",
               "value": "={{ $json.message.text }}",
               "type": "string"
             },
             {
-              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "id": "YOUR_ASSIGNMENT_UUID_2",
               "name": "user_id",
               "value": "={{ $json.message.from.id }}",
               "type": "string"
@@ -151,49 +97,10 @@
       "typeVersion": 3.4,
       "position": [
         0,
-        -224
+        160
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "e41e99f1-564f-451b-b458-5fa64aa22d32",
       "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://qwvqoiwgfppvuzobzgvy.supabase.co/rest/v1/transactions",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "apikey",
-              "value": "sb_publishable_daS1tWSY2UUcuR9BhfT7KA_3qbI2Aia"
-            },
-            {
-              "name": "Authorization",
-              "value": "sb_publishable_daS1tWSY2UUcuR9BhfT7KA_3qbI2Aia"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            },
-            {
-              "name": "Prefer",
-              "value": "return=representation"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"user_id\": \"{{ $json.user_id }}\",\n  \"type\": \"{{ $json.type }}\",\n  \"category\": \"{{ $json.category }}\",\n  \"amount\": {{ $json.amount }},\n  \"description\": \"{{ $json.description }}\"\n}\n",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        848,
-        -240
-      ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
-      "name": "HTTP Request2"
     },
     {
       "parameters": {
@@ -277,16 +184,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1216,
-        -240
+        1232,
+        144
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "7c2252dc-8af3-4ad2-97a0-9bfcdf277261",
       "name": "Send a text message",
-      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "webhookId": "da7658c0-aa99-4a42-84e2-413a03ed72a5",
       "credentials": {
         "telegramApi": {
-          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_BOT_NAME"
+          "id": "Eo3LhRYGm2zegv3o",
+          "name": "MyFin_bot"
         }
       }
     },
@@ -295,27 +202,33 @@
         "assignments": {
           "assignments": [
             {
-              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "id": "56f41a52-246a-4a5e-a484-fdfc3da8d7bc",
               "name": "type",
               "value": "={{ $('Parse Text').item.json.type }}",
               "type": "string"
             },
             {
-              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "id": "YOUR_ASSIGNMENT_UUID_2",
               "name": "category",
               "value": "={{ $('Parse Text').item.json.category }}",
               "type": "string"
             },
             {
-              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "id": "6708307d-6067-41e3-ba79-94e5e037d146",
               "name": "amount",
               "value": "={{ $('Parse Text').item.json.amount }}",
               "type": "number"
             },
             {
-              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "id": "9001b438-4e6f-4e0a-b6f6-863def0802a4",
               "name": "description",
               "value": "={{ $('Parse Text').item.json.description }}",
+              "type": "string"
+            },
+            {
+              "id": "c41104b1-6274-4fca-a313-2a7ed0274e4c",
+              "name": "user_id",
+              "value": "={{ $json.user_id }}",
               "type": "string"
             }
           ]
@@ -326,23 +239,23 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1024,
-        -240
+        1040,
+        144
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "a5246f5a-bb11-4d70-a47b-3e8d28f9b116",
       "name": "Edit Fields1"
     },
     {
       "parameters": {
-        "jsCode": "const items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const text = item.json.text.toLowerCase();\n  const result = { \n    user_id: item.json.user_id, \n    type: 'expense',  // по умолчанию расход\n    category: 'Личное',  // по умолчанию личное\n    amount: 0, \n    description: item.json.text \n  };\n  \n  // ТИП - ДОБАВЛЕН ПРОДАЛ!\n  if (text.includes('продал') || text.includes('получил') || text.includes('прибыль') || text.includes('заработал')) {\n    result.type = 'income';\n  }\n  \n  // Сумма\n  const amount = text.match(/(\\d+[.,]?\\d*)/);\n  if (amount) result.amount = parseFloat(amount[1].replace(',', '.'));\n  \n  // Категории БИЗНЕС (приоритет)\n  if (text.includes('бизнес') || text.includes('для бизнеса') || text.includes('стол') || \n      text.includes('офис') || text.includes('оборудование') || text.includes('реклама')) {\n    result.category = 'Бизнес';\n  } \n  // Личное\n  else if (text.includes('продукт') || text.includes('еда') || text.includes('продукты')) {\n    result.category = 'Личное';\n  }\n  // Другие личные категории\n  else if (text.includes('аренда') || text.includes('транспорт') || text.includes('одежда')) {\n    result.category = 'Личное';\n  }\n  \n  results.push({ json: result });\n}\n\nreturn results;\n\n"
+        "jsCode": "const items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const text = item.json.text.toLowerCase();\n  const result = { \n    user_id: item.json.user_id, \n    type: 'expense',  // по умолчанию расход\n    category: 'Личное',  // по умолчанию личное\n    amount: 0, \n    description: item.json.text \n  };\n  \n  // ТИП - ДОБАВЛЕН ПРОДАЛ!\n  if (text.includes('продал') || text.includes('получил') || text.includes('прибыль') || text.includes('заработал')) {\n    result.type = 'income';\n  }\n  \n  // Сумма\n  const amount = text.match(/(\\d+[.,]?\\d*)/);\n  if (amount) result.amount = parseFloat(amount[1].replace(',', '.'));\n  \n  // Категории БИЗНЕС (приоритет)\n  if (text.includes('бизнес') || text.includes('для бизнеса') || text.includes('стол') || \n      text.includes('офис') || text.includes('оборудование') || text.includes('реклама')) {\n    result.category = 'Бизнес';\n  } \n  // Личное\n  else if (text.includes('продукт') || text.includes('еда') || text.includes('продукты')) {\n    result.category = 'Личное';\n  }\n  // Другие личные категории\n  else if (text.includes('аренда') || text.includes('транспорт') || text.includes('одежда')) {\n    result.category = 'Личное';\n  }\n  \n  results.push({ json: result });\n}\n\n// Добавляем user_id в каждый элемент results\nfor (let item of results) {\n  // Для голосовых сообщений берём из Set user_id, для текстовых - из текущего $json\n  item.json.user_id = $('Set user_id').isExecuted \n    ? $('Set user_id').first().json.user_id \n    : $input.first().json.user_id;\n}\n\nreturn results;\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        688,
-        -240
+        704,
+        144
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "ff20f5b4-8d10-491d-8995-3b2b6695749f",
       "name": "Parse Text"
     },
     {
@@ -391,10 +304,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -112,
-        -64
+        -96,
+        320
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "5ceb0e3b-a173-467e-89ba-f7cce615b40a",
       "name": "HTTP Request3"
     },
     {
@@ -417,7 +330,7 @@
                       "type": "string",
                       "operation": "equals"
                     },
-                    "id": "REPLACE_WITH_UNIQUE_UUID"
+                    "id": "1a93937e-0e92-49ff-ae99-bdca7b92be7d"
                   }
                 ],
                 "combinator": "and"
@@ -433,7 +346,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "REPLACE_WITH_UNIQUE_UUID",
+                    "id": "e31ba4ff-2ce6-4c84-9a4e-233530584489",
                     "leftValue": "={{ $json.callback_query.data }}",
                     "rightValue": "income_today",
                     "operator": {
@@ -456,7 +369,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "REPLACE_WITH_UNIQUE_UUID",
+                    "id": "57b67848-a5ab-4020-8f5e-74b1aaa9c11f",
                     "leftValue": "={{ $json.callback_query.data }}",
                     "rightValue": "expense_today",
                     "operator": {
@@ -479,7 +392,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "REPLACE_WITH_UNIQUE_UUID",
+                    "id": "fb6a947a-0d1b-4ac1-ac0c-8377113f9388",
                     "leftValue": "={{ $json.callback_query.data }}",
                     "rightValue": "balance_all",
                     "operator": {
@@ -502,7 +415,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "REPLACE_WITH_UNIQUE_UUID",
+                    "id": "17f59a8e-c770-4031-a240-a4582d96fd0d",
                     "leftValue": "={{ $json.callback_query.data }}",
                     "rightValue": "reset_balance",
                     "operator": {
@@ -525,7 +438,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "REPLACE_WITH_UNIQUE_UUID",
+                    "id": "ce0b115d-fb79-41b1-a5e8-092576dd9ff4",
                     "leftValue": "={{ $json.callback_query.data }}",
                     "rightValue": "delete_last",
                     "operator": {
@@ -546,10 +459,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
       "position": [
-        -672,
-        160
+        -784,
+        592
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "da0086c1-3f10-48c7-8318-59564183509f",
       "name": "обработчик кнопок"
     },
     {
@@ -563,16 +476,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        480,
-        -64
+        496,
+        320
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "4d4c35f1-7ad2-4ddd-87d2-8406f68103a4",
       "name": "Answer Query a callback",
-      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "webhookId": "573f03b2-f69e-4dd0-b4c1-909862571754",
       "credentials": {
         "telegramApi": {
-          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_BOT_NAME"
+          "id": "Eo3LhRYGm2zegv3o",
+          "name": "MyFin_bot"
         }
       }
     },
@@ -587,7 +500,7 @@
           },
           "conditions": [
             {
-              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "id": "8eebcb6c-f386-4959-8c8b-86d7d17dbce5",
               "leftValue": "={{ $json.callback_query }}",
               "rightValue": "",
               "operator": {
@@ -604,10 +517,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -496,
-        -288
+        -480,
+        96
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "502ab67e-273d-4bcb-b795-dfffc28e7ec6",
       "name": "Is Message"
     },
     {
@@ -621,7 +534,7 @@
           },
           "conditions": [
             {
-              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "id": "11d7aa5a-72ad-495d-b498-f3ec91fcc255",
               "leftValue": "={{ $json.message.voice }}",
               "rightValue": "",
               "operator": {
@@ -638,10 +551,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -256,
-        -304
+        -240,
+        80
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "8c31bfce-f0ed-44a9-9383-395405ba5a26",
       "name": "voice or text"
     },
     {
@@ -651,10 +564,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        64,
-        -64
+        80,
+        320
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "c4abaddd-2cb8-48bf-8ba0-b91ab753bf00",
       "name": "Code in JavaScript"
     },
     {
@@ -727,16 +640,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        256,
-        -64
+        272,
+        320
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "934eabe7-0594-49c7-926f-2a1e30a8f658",
       "name": "Send a text message1",
-      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "webhookId": "da7658c0-aa99-4a42-84e2-413a03ed72a5",
       "credentials": {
         "telegramApi": {
-          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_BOT_NAME"
+          "id": "Eo3LhRYGm2zegv3o",
+          "name": "MyFin_bot"
         }
       }
     },
@@ -747,10 +660,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -288,
-        -64
+        -272,
+        320
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "f29bb974-36d6-4bab-a233-4a41dc4b7899",
       "name": "Today Filter"
     },
     {
@@ -764,16 +677,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        480,
-        96
+        496,
+        480
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "dc306150-95ee-4eb6-bf75-c553af59bb69",
       "name": "Answer Query a callback1",
-      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "webhookId": "573f03b2-f69e-4dd0-b4c1-909862571754",
       "credentials": {
         "telegramApi": {
-          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_BOT_NAME"
+          "id": "Eo3LhRYGm2zegv3o",
+          "name": "MyFin_bot"
         }
       }
     },
@@ -784,10 +697,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        64,
-        96
+        80,
+        480
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "a9a158f0-e54e-4af0-8010-d25e49b1628e",
       "name": "Code in JavaScript1"
     },
     {
@@ -840,10 +753,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -112,
-        96
+        -96,
+        480
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "152c6a24-83c2-4532-bae7-212857c82dba",
       "name": "Income Report"
     },
     {
@@ -853,10 +766,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -288,
-        96
+        -272,
+        480
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "2713aaca-71b9-4e9c-a3b7-71a003ff24f8",
       "name": "Today Filter Income"
     },
     {
@@ -929,16 +842,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        256,
-        96
+        272,
+        480
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "48109bc2-becb-4ba7-928a-63b3d7b00462",
       "name": "Send a text message2",
-      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "webhookId": "da7658c0-aa99-4a42-84e2-413a03ed72a5",
       "credentials": {
         "telegramApi": {
-          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_BOT_NAME"
+          "id": "Eo3LhRYGm2zegv3o",
+          "name": "MyFin_bot"
         }
       }
     },
@@ -953,16 +866,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        480,
-        256
+        496,
+        640
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "6da90797-f20e-47bc-8884-1c0f8f925844",
       "name": "Answer Query a callback2",
-      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "webhookId": "573f03b2-f69e-4dd0-b4c1-909862571754",
       "credentials": {
         "telegramApi": {
-          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_BOT_NAME"
+          "id": "Eo3LhRYGm2zegv3o",
+          "name": "MyFin_bot"
         }
       }
     },
@@ -973,10 +886,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        64,
-        256
+        80,
+        640
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "9664a916-621d-4efa-8f00-0eae12ad5b4e",
       "name": "Code in JavaScript2"
     },
     {
@@ -1049,16 +962,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        256,
-        256
+        272,
+        640
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "5ea9089f-7599-447f-9d36-255c406c114d",
       "name": "Send a text message3",
-      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "webhookId": "da7658c0-aa99-4a42-84e2-413a03ed72a5",
       "credentials": {
         "telegramApi": {
-          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_BOT_NAME"
+          "id": "Eo3LhRYGm2zegv3o",
+          "name": "MyFin_bot"
         }
       }
     },
@@ -1112,10 +1025,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -112,
-        256
+        -96,
+        640
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "cf039393-3e9a-4455-9446-4e68061747bb",
       "name": "Expense Report"
     },
     {
@@ -1125,10 +1038,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -288,
-        256
+        -272,
+        640
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "7e80629c-55ce-4004-908a-a11b691c7757",
       "name": "Today Filter Expense"
     },
     {
@@ -1142,20 +1055,12 @@
               "value": "*"
             },
             {
-              "name": "user_id",
-              "value": "=eq.{{ $('Telegram Trigger').first().json.callback_query.from.id }}"
-            },
-            {
               "name": "order",
               "value": "created_at.desc"
             },
             {
               "name": "limit",
               "value": "100"
-            },
-            {
-              "name": "created_at",
-              "value": "=gte.{{ $('Today Filter1').first().json.today_filter }}"
             }
           ]
         },
@@ -1177,16 +1082,16 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -112,
-        432
+        -96,
+        816
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "74d88113-df5c-49fa-86d0-692db5bb6ade",
       "name": "HTTP Request4"
     },
     {
       "parameters": {
         "resource": "callback",
-        "queryId": "={{ $('Telegram Trigger').first().json.callback_query.id }}\n\n",
+        "queryId": "={{ $('Telegram Trigger').first().json.callback_query.id }}\n",
         "additionalFields": {
           "show_alert": false
         }
@@ -1194,36 +1099,36 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        480,
-        432
+        496,
+        816
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "cd4f6fc7-1fdb-4b71-b426-464d68cf1fa5",
       "name": "Answer Query a callback3",
-      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "webhookId": "573f03b2-f69e-4dd0-b4c1-909862571754",
       "credentials": {
         "telegramApi": {
-          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_BOT_NAME"
+          "id": "Eo3LhRYGm2zegv3o",
+          "name": "MyFin_bot"
         }
       }
     },
     {
       "parameters": {
-        "jsCode": "// Отладка: покажи ВСЕ данные\nconsole.log('ALL INPUT:', JSON.stringify($input.all(), null, 2));\n\n// Правильный способ для Supabase массива\nconst transactions = $input.all().map(item => item.json);\n\nlet total_income = 0, total_expense = 0;\nlet transactions_list = '';\n\ntransactions.slice(0, 5).forEach(t => {\n  console.log('Transaction:', t); // Отладка\n  const amount = Number(t.amount) || 0;\n  const category = t.category || 'Неизвестно';\n  \n  if (t.type === 'income') total_income += amount;\n  else total_expense += amount;\n  \n  transactions_list += `• ${amount} грн | ${category}\\n`;\n});\n\nreturn [{\n  total_income,\n  total_expense,\n  balance: total_income - total_expense,\n  records_count: transactions.length,\n  transactions_list,\n  callback_query: $('Telegram Trigger').first().json.callback_query\n}];\n\n"
+        "jsCode": "// Все транзакции за ВСЁ время\nconst transactions = $input.all().map(item => item.json);\n\nlet total_income = 0, total_expense = 0;\nlet last5 = '';\n\ntransactions.slice(0, 5).forEach(t => {\n  const amount = Number(t.amount) || 0;\n  const category = t.category || 'Неизвестно';\n  const type_emoji = t.type === 'income' ? '💰' : '💸';\n  \n  if (t.type === 'income') total_income += amount;\n  else if (t.type === 'expense') total_expense += amount;\n  \n  last5 += `• ${amount} грн | ${type_emoji} ${category}\\n`;\n});\n\nconst balance = total_income - total_expense;\n\nreturn [{\n  json: {\n    title: \"💰 ОБЩИЙ БАЛАНС (ВСЁ ВРЕМЯ)\",\n    income: total_income.toFixed(0),\n    expense: total_expense.toFixed(0),\n    balance: balance.toFixed(0),\n    records: transactions.length,\n    lastOperations: last5 || 'Нет операций'\n  }\n}];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        64,
-        432
+        96,
+        816
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "d1797d03-e424-4bb5-8dab-7bfa3a9cf436",
       "name": "Code in JavaScript3"
     },
     {
       "parameters": {
         "chatId": "={{ $('Telegram Trigger').first().json.callback_query.message.chat.id }}\n",
-        "text": "=📊 Финансовый отчёт\n\n💰 Доходы: {{ $json.total_income }} грн\n💸 Расходы: {{ $json.total_expense }} грн\n💳 Баланс: {{ $json.balance }} грн\n📋 Записей: {{ $json.records_count }}\n\n**Последние операции:**\n{{ $json.transactions_list }}",
+        "text": "=📊 Финансовый отчёт\n\n💰 Доходы: {{ $json.income }} грн\n💸 Расходы: {{ $json.expense }} грн\n💳 Баланс: {{ $json.balance }} грн\n📋 Записей: {{ $json.records }}\n\n**Последние операции:**\n{{ $json.lastOperations }}",
         "replyMarkup": "inlineKeyboard",
         "inlineKeyboard": {
           "rows": [
@@ -1284,16 +1189,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        256,
-        432
+        272,
+        816
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "95bd16bf-0045-4a85-bbbd-1da24b875ece",
       "name": "Send a text message4",
-      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "webhookId": "da7658c0-aa99-4a42-84e2-413a03ed72a5",
       "credentials": {
         "telegramApi": {
-          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_BOT_NAME"
+          "id": "Eo3LhRYGm2zegv3o",
+          "name": "MyFin_bot"
         }
       }
     },
@@ -1304,10 +1209,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -288,
-        432
+        -272,
+        816
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "d8f0080d-996f-4440-bd3f-f683c0b2628f",
       "name": "Today Filter1"
     },
     {
@@ -1322,16 +1227,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -1088,
-        -48
+        -1072,
+        336
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "56786407-56ec-4eb6-ad6c-44cbe197a4e6",
       "name": "Send a text message5",
-      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "webhookId": "da7658c0-aa99-4a42-84e2-413a03ed72a5",
       "credentials": {
         "telegramApi": {
-          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_BOT_NAME"
+          "id": "Eo3LhRYGm2zegv3o",
+          "name": "MyFin_bot"
         }
       }
     },
@@ -1342,12 +1247,12 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        -912,
-        -48
+        -896,
+        336
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "be05d3a8-061f-48ea-a447-766614bed2fe",
       "name": "Wait",
-      "webhookId": "REPLACE_WITH_UNIQUE_UUID"
+      "webhookId": "2793428b-b0ba-4cef-a751-25f5188ee184"
     },
     {
       "parameters": {
@@ -1361,16 +1266,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -752,
-        -48
+        -736,
+        336
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "b6120148-2342-4908-8bcc-330c2e996da3",
       "name": "Send a text message6",
-      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "webhookId": "da7658c0-aa99-4a42-84e2-413a03ed72a5",
       "credentials": {
         "telegramApi": {
-          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_BOT_NAME"
+          "id": "Eo3LhRYGm2zegv3o",
+          "name": "MyFin_bot"
         }
       }
     },
@@ -1385,7 +1290,7 @@
           },
           "conditions": [
             {
-              "id": "REPLACE_WITH_UNIQUE_UUID",
+              "id": "e17dfc33-dee5-4225-b8b8-37795908322f",
               "leftValue": "={{ $json.message.text }}",
               "rightValue": "/start",
               "operator": {
@@ -1403,10 +1308,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -1312,
-        -32
+        -1296,
+        352
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "16e5ee7a-d159-4122-b88a-7511ae9b96ad",
       "name": "If sistem messeg"
     },
     {
@@ -1473,16 +1378,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        256,
-        768
+        272,
+        1152
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "df041a71-0f05-46a4-a454-be51472b0c3b",
       "name": "Send a text message7",
-      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "webhookId": "da7658c0-aa99-4a42-84e2-413a03ed72a5",
       "credentials": {
         "telegramApi": {
-          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_BOT_NAME"
+          "id": "Eo3LhRYGm2zegv3o",
+          "name": "MyFin_bot"
         }
       }
     },
@@ -1498,16 +1403,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -112,
-        608
+        -96,
+        992
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "c65d642c-7288-41ff-a1ab-a530f7167074",
       "name": "Send a text message8",
-      "webhookId": "REPLACE_WITH_UNIQUE_UUID",
+      "webhookId": "da7658c0-aa99-4a42-84e2-413a03ed72a5",
       "credentials": {
         "telegramApi": {
-          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_BOT_NAME"
+          "id": "Eo3LhRYGm2zegv3o",
+          "name": "MyFin_bot"
         }
       }
     },
@@ -1518,10 +1423,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -112,
-        768
+        -96,
+        1152
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "8fd733b5-e520-48a7-acc5-17158df8c6f8",
       "name": "Code in JavaScript5"
     },
     {
@@ -1555,10 +1460,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -288,
-        608
+        -272,
+        992
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "a9f7a365-ddc0-4929-8093-c7b4684e4166",
       "name": "HTTP ziro balans"
     },
     {
@@ -1596,10 +1501,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        80,
-        768
+        96,
+        1152
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "4e40700e-6995-48e7-b8b2-bccd720b9aae",
       "name": "HTTP DELETE last"
     },
     {
@@ -1640,11 +1545,125 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -288,
-        768
+        -272,
+        1152
       ],
-      "id": "REPLACE_WITH_UNIQUE_UUID",
+      "id": "60662575-1273-4d9e-a7c1-580db1e7df6d",
       "name": "HTTP GET last"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "67d1e2e4-fa32-481d-854d-1092d69c3df1",
+              "name": "user_id",
+              "value": "={{ $('voice or text').first().json.message.from.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        176,
+        0
+      ],
+      "id": "86a2c094-4875-416a-802b-282c72d3fb13",
+      "name": "Set user_id"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.openai.com/v1/audio/transcriptions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "=file",
+              "inputDataFieldName": "=data"
+            },
+            {
+              "name": "model",
+              "value": "whisper-1"
+            },
+            {
+              "name": "language",
+              "value": "ru"
+            },
+            {
+              "name": "response_format",
+              "value": "json"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        352,
+        0
+      ],
+      "id": "4f449711-4f82-4232-b1b0-befb60801c16",
+      "name": "HTTP POST file"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://qwvqoiwgfppvuzobzgvy.supabase.co/rest/v1/transactions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_daS1tWSY2UUcuR9BhfT7KA_3qbI2Aia"
+            },
+            {
+              "name": "Authorization",
+              "value": "sb_publishable_daS1tWSY2UUcuR9BhfT7KA_3qbI2Aia"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"user_id\": \"{{ $json.user_id }}\",\n  \"type\": \"{{ $json.type }}\",\n  \"category\": \"{{ $json.category }}\",\n  \"amount\": {{ $json.amount }},\n  \"description\": \"{{ $json.description }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        880,
+        144
+      ],
+      "id": "c7a9f420-43d8-4d14-8127-26628e51b523",
+      "name": "HTTP Request"
     }
   ],
   "pinData": {},
@@ -1654,17 +1673,6 @@
         [
           {
             "node": "If sistem messeg",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request1",
             "type": "main",
             "index": 0
           }
@@ -1686,18 +1694,7 @@
       "main": [
         [
           {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request1": {
-      "main": [
-        [
-          {
-            "node": "Merge",
+            "node": "Set user_id",
             "type": "main",
             "index": 0
           }
@@ -1711,17 +1708,6 @@
             "node": "Merge",
             "type": "main",
             "index": 1
-          }
-        ]
-      ]
-    },
-    "HTTP Request2": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields1",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -1741,16 +1727,11 @@
       "main": [
         [
           {
-            "node": "HTTP Request2",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
         ]
-      ]
-    },
-    "Send a text message": {
-      "main": [
-        []
       ]
     },
     "обработчик кнопок": {
@@ -1778,7 +1759,7 @@
         ],
         [
           {
-            "node": "Today Filter1",
+            "node": "HTTP Request4",
             "type": "main",
             "index": 0
           }
@@ -1808,11 +1789,6 @@
             "index": 0
           }
         ]
-      ]
-    },
-    "Answer Query a callback": {
-      "main": [
-        []
       ]
     },
     "Is Message": {
@@ -2000,13 +1976,7 @@
     },
     "Today Filter1": {
       "main": [
-        [
-          {
-            "node": "HTTP Request4",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Send a text message5": {
@@ -2029,11 +1999,6 @@
             "index": 0
           }
         ]
-      ]
-    },
-    "Send a text message6": {
-      "main": [
-        []
       ]
     },
     "If sistem messeg": {
@@ -2102,17 +2067,51 @@
           }
         ]
       ]
+    },
+    "Set user_id": {
+      "main": [
+        [
+          {
+            "node": "HTTP POST file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP POST file": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "availableInMCP": false
   },
-  "versionId": "REPLACE_WITH_UNIQUE_UUID",
+  "versionId": "YOUR_VERSION_UUID",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "d85d386a93ac23e5cda75afc884daa414066b5c356a591bc9c769d8a7119bd79"
+    "instanceId": "YOUR_INSTANCE_ID"
   },
-  "id": "wYhcp5ye30eXRYRT",
+  "id": "YOUR_WORKFLOW_ID",
   "tags": []
 }
